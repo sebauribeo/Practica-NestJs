@@ -1,6 +1,5 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-// La clase es singular, la tabla es plural
 @Entity('user_details')
 export class UserDetail extends BaseEntity {
     
@@ -16,10 +15,9 @@ export class UserDetail extends BaseEntity {
     @Column({ type: 'varchar', default: 'ACTIVE', length:8})
     status: string;
 
-    // el name es el nombre en la BD
     @CreateDateColumn({ type: 'timestamp', name: 'created_at', nullable: true}) 
     createdAt: Date;
 
-    @UpdateDateColumn({ type: 'timestamp', name: 'update_at', nullable: true}) 
+    @UpdateDateColumn({ type: 'timestamp', name: 'updated_at', nullable: true}) 
     updatedAt: Date;
 }

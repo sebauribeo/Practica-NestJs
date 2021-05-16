@@ -18,10 +18,9 @@ export class UserService {
         private readonly _mapperService: MapperService,
     ){}
 
-    // peticion de llamada por ID.
     async get(id: number): Promise<User> {
         if (!id) {
-            throw new BadRequestException('Se debe enviar un ID de identidad');
+            throw new BadRequestException('Se debe enviar un ID');
         }
 
         const regUser: User = await this._userRepository.findOne(id, {
@@ -46,13 +45,11 @@ export class UserService {
         return regUsers;
     }
 
-    // Crear un usuario
     async create(user: User): Promise<User> {
 
         const details = new UserDetail();
         user.details = details;
         
-        // Para lo Roles. Momentaneo
         const repo = await getConnection().getRepository(Role);
         const defaultRole = await repo.findOne({ where: {name: 'GENERAL'}});
         user.roles = [defaultRole];

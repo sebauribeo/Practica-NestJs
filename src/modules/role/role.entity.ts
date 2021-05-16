@@ -20,7 +20,7 @@ export class Role extends BaseEntity{
     @CreateDateColumn({ type: 'timestamp', name: 'created_at'}) 
     createdAt: Date;
 
-    @UpdateDateColumn({ type: 'timestamp', name: 'update_at'}) 
+    @UpdateDateColumn({ type: 'timestamp', name: 'updated_at'}) 
     updatedAt: Date;
 
     @ManyToMany( type => User, user => user.roles)
