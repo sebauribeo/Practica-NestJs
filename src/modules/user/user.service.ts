@@ -1,54 +1,74 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+
+import { UserRepository } from './user.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MapperService } from 'src/shared/mapper.service';
 import { UserDto } from './dto/user.dto';
 import { User } from './user.entity';
-import { UserRepository } from './user.repository';
+import { MapperService } from '../../shared/mapper.service';
+import { UserDetail } from './user.details.entity';
+import { getConnection } from 'typeorm';
+import { Role } from '../role/role.entity';
 
 @Injectable()
 export class UserService {
+
     constructor(
         @InjectRepository(UserRepository)
         private readonly _userRepository: UserRepository,
         private readonly _mapperService: MapperService,
     ){}
 
-    async get(id: number): Promise<UserDto> {
-        if(!id) {
-            throw new BadRequestException('id must be sent')
+    // peticion de llamada por ID.
+    async get(id: number): Promise<User> {
+        if (!id) {
+            throw new BadRequestException('Se debe enviar un ID de identidad');
         }
-        
-        const user: User = await this._userRepository.findOne(id, {
-            where: { status: 'ACTIVE' }
+
+        const regUser: User = await this._userRepository.findOne(id, {
+            where: { status: 'ACTIVE'},
         });
 
-        if(!user){
+        if (!regUser) {
             throw new NotFoundException();
         }
 
-        return this._mapperService.map<User, UserDto>(user, new UserDto());
+//        return this._mapperService.map<User, UserDto>(regUser, new UserDto());
+        return regUser;
     }
-    async getall(): Promise<UserDto> {
-        const users: User[] = await this._userRepository.find({
-            where: { status: 'ACTIVE' }
+
+    // peticion de llamada de todos los registros. Devuelve un array
+    async getAll(): Promise<User[]> {
+
+        const regUsers: User[] = await this._userRepository.find({
+            where: { status: 'ACTIVE' },
         });
 
-        return this._mapperService.mapCollection<User, UserDto>(
-            users, 
-            new UserDto(),
-        );
+        return regUsers;
     }
 
-    async create(user: User){
-        const savedUser = await this._userRepository.save(user);
-        return this._mapperService.map<User, UserDto>(savedUser, new UserDto)
+    // Crear un usuario
+    async create(user: User): Promise<User> {
+
+        const details = new UserDetail();
+        user.details = details;
+        
+        // Para lo Roles. Momentaneo
+        const repo = await getConnection().getRepository(Role);
+        const defaultRole = await repo.findOne({ where: {name: 'GENERAL'}});
+        user.roles = [defaultRole];
+
+        const saveUser: User = await this._userRepository.save(user);
+        return saveUser;
+        // return this._mapperService.map<User, UserDto>(saveUser, new UserDto());
     }
 
+    // Actualiza 
     async update(id: number, user: User): Promise<void> {
         await this._userRepository.update(id, user);
     }
 
-    async delete(id: number): Promise<void>{
+    //Borra
+    async delete(id: number): Promise<void> {
         const userExists = await this._userRepository.findOne(id, {
             where: { status: 'ACTIVE'}
         });
@@ -57,7 +77,6 @@ export class UserService {
             throw new NotFoundException();
         }
 
-        await this._userRepository.update(id, { status: 'INACTIVE'})
+        await this._userRepository.update(id, { status: 'INACTIVE' });
     }
 }
-

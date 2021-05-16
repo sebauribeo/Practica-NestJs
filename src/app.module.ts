@@ -5,14 +5,17 @@ import { Configuration } from './config/config.keys';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { DatabaseModule } from './database/database.module';
-import { UserModule } from './modules/user/user.module';
 import { RoleModule } from './modules/role/role.module';
-import { UserController } from './modules/user/user.controller';
+import { UserModule } from './modules/user/user.module';
+import { UserRepository } from './modules/user/user.repository';
+import { UserService } from './modules/user/user.service';
+import { MapperService } from './shared/mapper.service';
+
 
 @Module({
   imports: [ConfigModule, DatabaseModule, UserModule, RoleModule],
-  controllers: [AppController, UserController],
-  providers: [AppService],
+  controllers: [AppController],
+  providers: [AppService, UserService, MapperService, UserRepository],
 })
 export class AppModule {
   static port: number | string;

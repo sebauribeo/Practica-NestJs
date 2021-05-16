@@ -2,6 +2,7 @@ import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, JoinTable, Ma
 import { Role } from "../role/role.entity";
 import { UserDetail } from "./user.details.entity";
 
+// La clase es singular, la tabla es plural
 @Entity('users')
 export class User extends BaseEntity {
     
@@ -20,6 +21,7 @@ export class User extends BaseEntity {
     @Column({ type: 'varchar', default: 'ACTIVE', length:8})
     status: string;
 
+    // el name es el nombre en la BD
     @CreateDateColumn({ type: 'timestamp', name: 'created_at'}) 
     createdAt: Date;
 
@@ -31,8 +33,8 @@ export class User extends BaseEntity {
         nullable: false,
         eager: true
     })
-    @JoinColumn({name: 'detail_id'})  
-    details: UserDetail;             
+    @JoinColumn({name: 'detail_id'}) // esta es la columna que hara el join con la UserDetail, user es 
+    details: UserDetail;             // el propietario de la relación.
 
     @ManyToMany(type => Role, role => role.users, {
         eager: true,

@@ -1,22 +1,24 @@
-import { Injectable } from '@nestjs/common';
-import { UserDto } from 'src/modules/user/dto/user.dto';
-import { User } from 'src/modules/user/user.entity';
-import { TypeMapper } from 'ts-mapper';
+import { Injectable } from "@nestjs/common";
+import { UserDto } from "src/modules/user/dto/user.dto";
+import { User } from "src/modules/user/user.entity";
+import { TypeMapper } from "ts-mapper";
 
-@Injectable()
+
+@Injectable() 
 export class MapperService extends TypeMapper {
 
-    constructor(){
+    constructor() {
         super();
         this.config();
     }
 
+
     private config(): void {
         this.createMap<User, UserDto>()
-        .map(entity => entity.id, dto => dto.id)
-        .map(entity => entity.username, dto => dto.username)
-        .map(entity => entity.email, dto => dto.email)
-        .map(entity => entity.details, dto => dto.details)
-        .map(entity => entity.roles, dto => dto.roles)
+        .map(UserEntity => UserEntity.id, UserDtodto => UserDtodto.id)
+        .map(UserEntity => UserEntity.username, UserDtodto => UserDtodto.username)
+        .map(UserEntity => UserEntity.email, UserDtodto => UserDtodto.email)
+        .map(UserEntity => UserEntity.details, UserDtodto => UserDtodto.details)
+        .map(UserEntity => UserEntity.roles, UserDtodto => UserDtodto.roles)
     }
 }
