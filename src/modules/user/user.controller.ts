@@ -8,7 +8,7 @@ export class UserController {
     constructor(private readonly _userService: UserService) {}
 
     @Get(':id')
-    async getUser(@Param() id: number) {
+    async getUser(@Param('id', ParseIntPipe) id: number) {
         const user = await this._userService.get(id);
         return user;
     }
@@ -27,12 +27,12 @@ export class UserController {
 
     @Patch(':id')
     async updateUser(@Param('id', ParseIntPipe) id: number, @Body() user: User){
-        const updatedUser = await this._userService.update(id, user);
+        await this._userService.update(id, user);
         return true;
     } 
 
     @Delete(':id')
-    async deleteUser(@Param() id: number) {
+    async deleteUser(@Param('is', ParseIntPipe) id: number) {
         await this._userService.delete(id);
         return true;
     }
