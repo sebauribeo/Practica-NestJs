@@ -32,7 +32,7 @@ export class UserController {
     } 
 
     @Delete(':id')
-    async deleteUser(@Param('id', ParseIntPipe) id: number, @Body() user: User) {
+    async deleteUser(@Param('id', ParseIntPipe) id: number) {
         await this._userService.delete(id);
         return true;
     }
